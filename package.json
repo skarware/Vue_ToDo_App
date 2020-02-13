@@ -9,7 +9,11 @@
   },
   "dependencies": {
     "core-js": "^3.6.4",
-    "vue": "^2.6.11"
+    "font-awesome": "^4.7.0",
+    "normalize.css": "^8.0.1",
+    "purecss": "^1.0.1",
+    "vue": "^2.6.11",
+    "vue-fontawesome-icon": "^1.1.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.2.0",

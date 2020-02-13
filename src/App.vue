@@ -1,35 +1,148 @@
 <template>
     <div id="app">
+        <div class="container">
 
-        <h1>{{message}}</h1>
-        <List v-bind:list="list"></List>
-        <Input @onInput="addName"/>
+            <header class="flex-wrapper">
+                <h1>{{appTitle}}</h1>
+                <!--                <vue-fontawesome icon="check" size="2" color="green"></vue-fontawesome>-->
+                <svg class="svg-inline--fa fa-check-double fa-w-16" aria-hidden="true" focusable="false"
+                     data-prefix="fas" data-icon="check-double" role="img" xmlns="http://www.w3.org/2000/svg"
+                     viewBox="0 0 512 512" data-fa-i2svg="">
+                    <path fill="currentColor"
+                          d="M505 174.8l-39.6-39.6c-9.4-9.4-24.6-9.4-33.9 0L192 374.7 80.6 263.2c-9.4-9.4-24.6-9.4-33.9 0L7 302.9c-9.4 9.4-9.4 24.6 0 34L175 505c9.4 9.4 24.6 9.4 33.9 0l296-296.2c9.4-9.5 9.4-24.7.1-34zm-324.3 106c6.2 6.3 16.4 6.3 22.6 0l208-208.2c6.2-6.3 6.2-16.4 0-22.6L366.1 4.7c-6.2-6.3-16.4-6.3-22.6 0L192 156.2l-55.4-55.5c-6.2-6.3-16.4-6.3-22.6 0L68.7 146c-6.2 6.3-6.2 16.4 0 22.6l112 112.2z"></path>
+                </svg>
+            </header>
+
+            <div id="addTask" class="flex-wrapper">
+                <Input @onInput="addTask"/>
+            </div>
+
+            <div id="tasks-container">
+                <div id="toDoTasks">
+                    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="clipboard-list" role="img"
+                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""
+                         class="svg-inline--fa fa-clipboard-list fa-w-12">
+                        <path fill="currentColor"
+                              d="M336 64h-80c0-35.3-28.7-64-64-64s-64 28.7-64 64H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48zM96 424c-13.3 0-24-10.7-24-24s10.7-24 24-24 24 10.7 24 24-10.7 24-24 24zm0-96c-13.3 0-24-10.7-24-24s10.7-24 24-24 24 10.7 24 24-10.7 24-24 24zm0-96c-13.3 0-24-10.7-24-24s10.7-24 24-24 24 10.7 24 24-10.7 24-24 24zm96-192c13.3 0 24 10.7 24 24s-10.7 24-24 24-24-10.7-24-24 10.7-24 24-24zm128 368c0 4.4-3.6 8-8 8H168c-4.4 0-8-3.6-8-8v-16c0-4.4 3.6-8 8-8h144c4.4 0 8 3.6 8 8v16zm0-96c0 4.4-3.6 8-8 8H168c-4.4 0-8-3.6-8-8v-16c0-4.4 3.6-8 8-8h144c4.4 0 8 3.6 8 8v16zm0-96c0 4.4-3.6 8-8 8H168c-4.4 0-8-3.6-8-8v-16c0-4.4 3.6-8 8-8h144c4.4 0 8 3.6 8 8v16z"></path>
+                    </svg>
+                    <h2> Tasks To Do</h2>
+                    <List
+                            v-bind:list="todoListComputed"
+                            @editClick="editClick"
+                            @closeClick="closeClick"
+                            @taskClicked="taskClicked"
+                    ></List>
+                </div>
+                <div id="completedTasks">
+                    <svg class="svg-inline--fa fa-clipboard-check fa-w-12" aria-hidden="true" focusable="false"
+                         data-prefix="fas" data-icon="clipboard-check" role="img" xmlns="http://www.w3.org/2000/svg"
+                         viewBox="0 0 384 512" data-fa-i2svg="">
+                        <path fill="currentColor"
+                              d="M336 64h-80c0-35.3-28.7-64-64-64s-64 28.7-64 64H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48zM192 40c13.3 0 24 10.7 24 24s-10.7 24-24 24-24-10.7-24-24 10.7-24 24-24zm121.2 231.8l-143 141.8c-4.7 4.7-12.3 4.6-17-.1l-82.6-83.3c-4.7-4.7-4.6-12.3.1-17L99.1 285c4.7-4.7 12.3-4.6 17 .1l46 46.4 106-105.2c4.7-4.7 12.3-4.6 17 .1l28.2 28.4c4.7 4.8 4.6 12.3-.1 17z"></path>
+                    </svg>
+                    <h2> Completed Tasks</h2>
+                    <List
+                            v-bind:list="completedListComputed"
+                            @editClick="editClick"
+                            @closeClick="closeClick"
+                            @taskClicked="taskClicked"
+                    ></List>
+                </div>
+            </div>
+        </div>
 
     </div>
 </template>
 
 <script>
-    import List from './components/List.vue'
-    import Input from './components/Input.vue'
+    import List from './components/List.vue';
+    import Input from './components/Input.vue';
 
     export default {
         name: 'App',
         data() {
             return {
-                message: 'Vue To:Do::App',
+                appTitle: 'ToDo::List ',
                 name: '',
-                list: [
-                    "Jonas",
-                    "Martynas"
+                tasksArr: [
+                    {
+                        id: 1,
+                        title: 'pirmas task',
+                        done: false
+                    },
+                    {
+                        id: 2,
+                        title: 'antras task',
+                        done: true
+                    },
+                    {
+                        id: 3,
+                        title: 'trecias task',
+                        done: false
+                    },
+                    {
+                        id: 5,
+                        title: 'penktas task',
+                        done: true
+                    },
+                    {
+                        id: 6,
+                        title: 'sestas task',
+                        done: false
+                    },
                 ]
             }
         },
-        methods: {
-            addName(value) {
-                if (value !== '') {
-                    this.list.push(value);
-                }
+        computed: {
+            todoListComputed: function () {
+                return this.tasksArr.filter(task => !task.done);
+            },
+            completedListComputed: function () {
+                return this.tasksArr.filter(task => task.done);
+            },
+            // increase Id number and return for new obj is pushed into array
+            nextId() {
+                return this.tasksArr.length + 1;
             }
+
+        },
+        methods: {
+            addTask(task) {
+                if (task !== '') {
+                    // push new task obj into array
+                    this.tasksArr.push(
+                        {
+                            id: this.nextId,
+                            title: task,
+                            done: false
+                        }
+                    );
+                }
+            },
+            editClick(task) {
+                console.log("editClick eventas is App componento")
+                console.log(task);
+
+            },
+            closeClick(task) {
+                console.log("closeClick eventas is App componento")
+                console.log(task);
+                console.log(this.tasksArr);
+                // delete clicked task from array
+                this.tasksArr.forEach(el => {
+                    if (el != null) {
+                        if (el.id.toString() === task.id.toString()) {
+                            delete this.tasksArr[this.tasksArr.indexOf(el)];
+                        }
+                    }
+                });
+                console.log(this.tasksArr);
+                this.$forceUpdate(); // lyg turetu pr naujo renderinti?
+            },
+            taskClicked(task) {
+                console.log("taskClicked eventas is App componento")
+                console.log(task);
+            },
         },
         components: {
             List,
@@ -39,6 +152,8 @@
 </script>
 
 <style>
+    /*@import "~@fortawesome";*/
+
     #app {
         font-family: Avenir, Helvetica, Arial, sans-serif;
         -webkit-font-smoothing: antialiased;
@@ -47,4 +162,72 @@
         color: #2c3e50;
         margin-top: 60px;
     }
+
+    /* Include the padding and border in an element's total width and height */
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        background-color: #f8f9f9;
+        text-align: center;
+    }
+
+    h1, h2 {
+        color: #566573;
+        padding: 25px 0;
+        margin: 0;
+        display: inline-block;
+        /*vertical-align: middle;*/
+    }
+
+    .fa-check-double {
+        color: green;
+        height: 2em;
+        margin: 0 10px;
+    }
+
+    .fa-clipboard-check {
+        height: 2em;
+        margin: 0 10px;
+    }
+
+    .fa-clipboard-list {
+        height: 2em;
+        margin: 0 10px;
+        text-align: center;
+
+    }
+
+    .container {
+        max-width: 600px;
+        width: 80%;
+        margin: 0 auto;
+    }
+
+    .flex-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #tasks-container {
+    }
+
+    #tasks-container ul {
+        text-align: left;
+    }
+
+    #clearButton {
+        /*background: rgb(202, 60, 60); !* this is a maroon *!*/
+        color: white;
+        background: #cb4335;
+        margin-top: 50px;
+    }
+
+    #clearButton:hover {
+        transform: scale(0.95);
+    }
+
+
 </style>
