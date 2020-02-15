@@ -1,13 +1,15 @@
 <template>
-<!--    // check if task is done and put it in colpetd tasks list-->
-    <li v-if="task.done" v-on:click="taskClicked" class="checked">{{task.title}}
-        <span v-on:click="editButton" class="edit">⁖</span>
-        <span v-on:click="closeButton" class="close">×</span>
+    <!--    // check if task is done and put it in completed tasks list-->
+    <li v-if="task.done"
+        v-on:click="taskClicked"
+        class="checked">{{task.title}}
+        <span v-on:click.stop="editButton" class="edit">⁖</span>
+        <span v-on:click.stop="closeButton" class="close">×</span>
     </li>
-<!--   // else task is in todo list-->
+    <!--   // else task is in todo list-->
     <li v-else v-on:click="taskClicked">{{task.title}}
-        <span v-on:click="editButton" class="edit">⁖</span>
-        <span v-on:click="closeButton" class="close">×</span>
+        <span v-on:click.stop="editButton" class="edit">⁖</span>
+        <span v-on:click.stop="closeButton" class="close">×</span>
     </li>
 </template>
 
@@ -31,7 +33,6 @@
                 this.$emit('taskClicked', this.task);
             },
         },
-
     }
 </script>
 

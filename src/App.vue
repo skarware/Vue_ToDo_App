@@ -4,7 +4,6 @@
 
             <header class="flex-wrapper">
                 <h1>{{appTitle}}</h1>
-                <!--                <vue-fontawesome icon="check" size="2" color="green"></vue-fontawesome>-->
                 <svg class="svg-inline--fa fa-check-double fa-w-16" aria-hidden="true" focusable="false"
                      data-prefix="fas" data-icon="check-double" role="img" xmlns="http://www.w3.org/2000/svg"
                      viewBox="0 0 512 512" data-fa-i2svg="">
@@ -14,11 +13,14 @@
             </header>
 
             <div id="addTask" class="flex-wrapper">
-                <Input @onInput="addTask"/>
+                <Input v-bind:inputStr="inputStr"
+                       @onInput="addTask"
+                       @updateInput="updateTask"
+                />
             </div>
 
             <div id="tasks-container">
-                <div id="toDoTasks">
+                <div v-if="isTodoListNotEmpty" id="toDoTasks">
                     <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="clipboard-list" role="img"
                          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""
                          class="svg-inline--fa fa-clipboard-list fa-w-12">
@@ -26,14 +28,13 @@
                               d="M336 64h-80c0-35.3-28.7-64-64-64s-64 28.7-64 64H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48zM96 424c-13.3 0-24-10.7-24-24s10.7-24 24-24 24 10.7 24 24-10.7 24-24 24zm0-96c-13.3 0-24-10.7-24-24s10.7-24 24-24 24 10.7 24 24-10.7 24-24 24zm0-96c-13.3 0-24-10.7-24-24s10.7-24 24-24 24 10.7 24 24-10.7 24-24 24zm96-192c13.3 0 24 10.7 24 24s-10.7 24-24 24-24-10.7-24-24 10.7-24 24-24zm128 368c0 4.4-3.6 8-8 8H168c-4.4 0-8-3.6-8-8v-16c0-4.4 3.6-8 8-8h144c4.4 0 8 3.6 8 8v16zm0-96c0 4.4-3.6 8-8 8H168c-4.4 0-8-3.6-8-8v-16c0-4.4 3.6-8 8-8h144c4.4 0 8 3.6 8 8v16zm0-96c0 4.4-3.6 8-8 8H168c-4.4 0-8-3.6-8-8v-16c0-4.4 3.6-8 8-8h144c4.4 0 8 3.6 8 8v16z"></path>
                     </svg>
                     <h2> Tasks To Do</h2>
-                    <List
-                            v-bind:list="todoListComputed"
-                            @editClick="editClick"
-                            @closeClick="closeClick"
-                            @taskClicked="taskClicked"
+                    <List v-bind:list="todoListComputed"
+                          @editClick="editClick"
+                          @closeClick="closeClick"
+                          @taskClicked="taskClicked"
                     ></List>
                 </div>
-                <div id="completedTasks">
+                <div v-if="isCompletedListNotEmpty" id="completedTasks">
                     <svg class="svg-inline--fa fa-clipboard-check fa-w-12" aria-hidden="true" focusable="false"
                          data-prefix="fas" data-icon="clipboard-check" role="img" xmlns="http://www.w3.org/2000/svg"
                          viewBox="0 0 384 512" data-fa-i2svg="">
@@ -41,15 +42,16 @@
                               d="M336 64h-80c0-35.3-28.7-64-64-64s-64 28.7-64 64H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48zM192 40c13.3 0 24 10.7 24 24s-10.7 24-24 24-24-10.7-24-24 10.7-24 24-24zm121.2 231.8l-143 141.8c-4.7 4.7-12.3 4.6-17-.1l-82.6-83.3c-4.7-4.7-4.6-12.3.1-17L99.1 285c4.7-4.7 12.3-4.6 17 .1l46 46.4 106-105.2c4.7-4.7 12.3-4.6 17 .1l28.2 28.4c4.7 4.8 4.6 12.3-.1 17z"></path>
                     </svg>
                     <h2> Completed Tasks</h2>
-                    <List
-                            v-bind:list="completedListComputed"
-                            @editClick="editClick"
-                            @closeClick="closeClick"
-                            @taskClicked="taskClicked"
+                    <List v-bind:list="completedListComputed"
+                          @editClick="editClick"
+                          @closeClick="closeClick"
+                          @taskClicked="taskClicked"
                     ></List>
                 </div>
             </div>
         </div>
+
+        <button id="clearButton" class="pure-button">Clear All Tasks</button>
 
     </div>
 </template>
@@ -64,35 +66,38 @@
             return {
                 appTitle: 'ToDo::List ',
                 name: '',
+                inputStr: '',
+                indexToEditTasksArr: null,
                 tasksArr: [
                     {
                         id: 1,
                         title: 'pirmas task',
-                        done: false
+                        done: true
                     },
                     {
                         id: 2,
                         title: 'antras task',
-                        done: true
+                        done: false
                     },
                     {
                         id: 3,
                         title: 'trecias task',
-                        done: false
+                        done: true
                     },
                     {
                         id: 5,
                         title: 'penktas task',
-                        done: true
+                        done: false
                     },
                     {
                         id: 6,
                         title: 'sestas task',
-                        done: false
+                        done: true
                     },
                 ]
             }
         },
+        watch: {},
         computed: {
             todoListComputed: function () {
                 return this.tasksArr.filter(task => !task.done);
@@ -102,47 +107,75 @@
             },
             // increase Id number and return for new obj is pushed into array
             nextId() {
-                return this.tasksArr.length + 1;
-            }
-
+                if (this.tasksArr.length > 0) {
+                    return this.tasksArr[this.tasksArr.length - 1].id + 1;
+                }
+                return 0;
+            },
+            isTodoListNotEmpty() {
+                return this.todoListComputed.length > 0;
+            },
+            isCompletedListNotEmpty() {
+                return this.completedListComputed.length > 0;
+            },
         },
         methods: {
-            addTask(task) {
-                if (task !== '') {
+            addTask(taskTitle) {
+                if (taskTitle !== '') {
                     // push new task obj into array
                     this.tasksArr.push(
                         {
                             id: this.nextId,
-                            title: task,
+                            title: taskTitle,
                             done: false
                         }
                     );
                 }
             },
+            updateTask(taskTitle) {
+                // if empty string received reset inputStr to empty string so Input component knows the editing of task is done
+                if (taskTitle === '') {
+                    this.inputStr = '';
+                }
+                // else update title in array by its index
+                else {
+                    this.tasksArr[this.indexToEditTasksArr].title = taskTitle;
+                }
+                console.log(taskTitle);
+            },
             editClick(task) {
                 console.log("editClick eventas is App componento")
                 console.log(task);
-
+                this.inputStr = task.title;
+                // find task index in tasksArr for live update edit
+                this.tasksArr.forEach((el, idx) => {
+                    if (el.id.toString() === task.id.toString()) {
+                        this.indexToEditTasksArr = idx;
+                    }
+                });
             },
             closeClick(task) {
                 console.log("closeClick eventas is App componento")
                 console.log(task);
                 console.log(this.tasksArr);
                 // delete clicked task from array
-                this.tasksArr.forEach(el => {
-                    if (el != null) {
-                        if (el.id.toString() === task.id.toString()) {
-                            delete this.tasksArr[this.tasksArr.indexOf(el)];
-                        }
+                this.tasksArr.forEach((el, idx) => {
+                    if (el.id.toString() === task.id.toString()) {
+                        this.tasksArr.splice(idx, 1);
                     }
                 });
                 console.log(this.tasksArr);
-                this.$forceUpdate(); // lyg turetu pr naujo renderinti?
             },
             taskClicked(task) {
                 console.log("taskClicked eventas is App componento")
                 console.log(task);
-            },
+                // Check clicked task in array
+                this.tasksArr.forEach((el, idx) => {
+                    if (el.id.toString() === task.id.toString()) {
+                        this.tasksArr[idx].done = !task.done;
+                    }
+                });
+            }
         },
         components: {
             List,
@@ -152,8 +185,6 @@
 </script>
 
 <style>
-    /*@import "~@fortawesome";*/
-
     #app {
         font-family: Avenir, Helvetica, Arial, sans-serif;
         -webkit-font-smoothing: antialiased;
