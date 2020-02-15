@@ -19,6 +19,8 @@
                 />
             </div>
 
+            <h2 v-if="tasksArr.length === 0">Task list is empty</h2>
+
             <div id="tasks-container">
                 <div v-if="isTodoListNotEmpty" id="toDoTasks">
                     <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="clipboard-list" role="img"
@@ -51,7 +53,7 @@
             </div>
         </div>
 
-        <button id="clearButton" class="pure-button">Clear All Tasks</button>
+        <button v-on:click="clearTasksArr" id="clearButton" class="pure-button">Clear All Tasks</button>
 
     </div>
 </template>
@@ -68,36 +70,21 @@
                 name: '',
                 inputStr: '',
                 indexToEditTasksArr: null,
-                tasksArr: [
-                    {
-                        id: 1,
-                        title: 'pirmas task',
-                        done: true
-                    },
-                    {
-                        id: 2,
-                        title: 'antras task',
-                        done: false
-                    },
-                    {
-                        id: 3,
-                        title: 'trecias task',
-                        done: true
-                    },
-                    {
-                        id: 5,
-                        title: 'penktas task',
-                        done: false
-                    },
-                    {
-                        id: 6,
-                        title: 'sestas task',
-                        done: true
-                    },
-                ]
+                tasksArr: []
             }
         },
-        watch: {},
+        watch: {
+            // auto save tasks array to localStorage
+            tasksArr: {
+                // This will let Vue know to look inside the array
+                deep: true,
+                // We have to move our method to a handler field
+                handler() {
+                    console.log("auto save invoked");
+                    localStorage.setItem('tasks', JSON.stringify(this.tasksArr));   // localStorage.setItem('key', 'value')
+                }
+            },
+        },
         computed: {
             todoListComputed: function () {
                 return this.tasksArr.filter(task => !task.done);
@@ -119,7 +106,21 @@
                 return this.completedListComputed.length > 0;
             },
         },
+        mounted() {
+            this.init();
+        },
         methods: {
+            init() {
+                // load task from localStorage if any
+                this.tasksArr = localStorage.getItem('tasks') ? JSON.parse(localStorage.getItem('tasks')) : []; // localStorage.getItem('key');
+                console.log("init() method invoked")
+            },
+            clearTasksArr() {
+                // clear tasks from localStorage
+                localStorage.clear();
+                // reset tasks array to empty one
+                this.tasksArr = [];
+            },
             addTask(taskTitle) {
                 if (taskTitle !== '') {
                     // push new task obj into array
@@ -191,7 +192,7 @@
         -moz-osx-font-smoothing: grayscale;
         text-align: center;
         color: #2c3e50;
-        margin-top: 60px;
+        /*margin-top: 60px;*/
     }
 
     /* Include the padding and border in an element's total width and height */
