@@ -14,6 +14,7 @@
                type="text"
                placeholder="Add New Task"
                required="required"
+               ref="focusInput"
         />
         <input v-else
                v-on:keyup="updateInput"
@@ -21,6 +22,7 @@
                v-model="taskTitle" id="updateTask"
                type="text"
                required="required"
+               ref="focusInput"
         />
     </form>
 </template>
@@ -37,11 +39,18 @@
             inputStr: String
         },
         watch: {
+            // watch then inputStr changes and task edit begins
             inputStr(newVal) {
+                // change input value with new value from App component
                 this.taskTitle = newVal;
+                // focus Update input
+                this.setFocus();
             }
         },
         methods: {
+            setFocus() {
+                this.$refs.focusInput.focus();
+            },
             getInput() {
                 console.log('getInput method in Input component runs');
                 // on enter emit task from the input
