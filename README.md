@@ -1,8 +1,9 @@
-# vue_todo_app
+# Vue ToDo App
 
 ## Live Demo on GitHub Pages
+```
 https://skarware.github.io/Vue_ToDo_App/
-
+```
 ## Project setup
 ```
 npm install
