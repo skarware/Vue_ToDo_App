@@ -80,8 +80,8 @@
                 deep: true,
                 // We have to move our method to a handler field
                 handler() {
-                    console.log("auto save invoked");
-                    localStorage.setItem('tasks', JSON.stringify(this.tasksArr));   // localStorage.setItem('key', 'value')
+                    console.log("watch:tasksArr: Auto save invoked");
+                    this.saveTasksArr();
                 }
             },
         },
@@ -111,11 +111,22 @@
         },
         methods: {
             init() {
-                // load task from localStorage if any
-                this.tasksArr = localStorage.getItem('tasks') ? JSON.parse(localStorage.getItem('tasks')) : []; // localStorage.getItem('key');
                 console.log("init() method invoked")
+                // load tasksArray from localStorage if it's not empty
+                if (localStorage.getItem('tasks')) {
+                    this.tasksArr = JSON.parse(localStorage.getItem('tasks'));
+                    console.log("init() method invoked: loading data from localStorage")
+                }
+                // save tasks array for app to function properly
+                this.saveTasksArr();
+            },
+            saveTasksArr() {
+                // save tasksArr into localStorage
+                console.log("saveTasksArr() method invoked: saving tasksArr into localStorage");
+                localStorage.setItem('tasks', JSON.stringify(this.tasksArr));
             },
             clearTasksArr() {
+                console.info("clearTasksArr() method invoked: clearing tasksArr and localStorage");
                 // clear tasks from localStorage
                 localStorage.clear();
                 // reset tasks array to empty one
